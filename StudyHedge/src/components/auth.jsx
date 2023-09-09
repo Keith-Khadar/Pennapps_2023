@@ -43,7 +43,7 @@ export const signIn = async (email, password) => {
     await createUserWithEmailAndPassword(auth, email, password);
   } catch (err) {
     console.error(err);
-    alert("Something Went Wrong try a different email or password.");
+    alert("Something went wrong. Try a different email or password.");
   }
 };
 
