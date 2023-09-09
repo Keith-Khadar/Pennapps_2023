@@ -80,7 +80,7 @@ export const Login = () => {
                   signIn(email, password);
                 }}
               >
-                Sign in
+                Sign up/Sign in
               </button>
             </div>
           </form>
