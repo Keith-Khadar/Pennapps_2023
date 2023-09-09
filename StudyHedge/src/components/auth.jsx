@@ -65,6 +65,8 @@ export const forgotPassword = (email) => {
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      alert("Error! Check that you have entered a valid email.");
+      if (error.message == "Firebase: Error (auth/missing-email).") {
+        alert("Please enter the email associated with your account.");
+      }
     });
 };
