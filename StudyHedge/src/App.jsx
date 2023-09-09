@@ -4,6 +4,7 @@ import { Login } from "./components/login";
 import { Settings } from "./components/settings";
 import { auth } from "./config/firebase";
 import { Calendar } from "./components/calendar";
+import AddDeadline from "./components/addDeadline";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -47,24 +48,7 @@ function App() {
                     />
                   </div>
                 </div>
-                <button className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg flex items-center">
-                  {/* SVG icon */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    className="w-8 h-8 mr-2" // Adjust the size and margin as needed
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  Add Deadline
-                </button>
+                <AddDeadline></AddDeadline>
 
                 <button className="bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg flex items-center">
                   {/* SVG icon */}
