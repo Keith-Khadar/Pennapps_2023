@@ -1,10 +1,24 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
+import { useEffect, useState } from "react";
+import { isSignedIn } from "./components/auth";
+import { Login } from "./components/login";
+import { Logout } from "./components/logout";
 
 function App() {
-  return <h1 className="text-3xl font-bold underline">Hello World!</h1>;
+  const [userSignedIn, setUserSignedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if the user is signed in asynchronously
+    isSignedIn().then((signedIn) => {
+      setUserSignedIn(signedIn);
+    });
+  }, []);
+
+  return (
+    <div className="App">
+      {!userSignedIn ? <Login></Login> : <Logout></Logout>}
+    </div>
+  );
 }
 
 export default App;
