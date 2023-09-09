@@ -40,6 +40,11 @@ function App() {
                 <div class="flex justify-around items-center content-around">
                   <div class="text-4xl font-bold text-blue-500 shadow-lg p-4 rounded-lg">
                     Study Hedge
+                    <img
+                      className="mx-auto h-10 w-auto"
+                      src="src/assets/Hedge.png"
+                      alt="Study Hedge"
+                    />
                   </div>
                 </div>
                 <button className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg flex items-center">

@@ -1,5 +1,5 @@
 :root {
-    --fc-border-color: rgba(0, 0, 0, 0.667);
+    --fc-border-color: rgba(0, 0, 0, 0);
     --fc-daygrid-event-dot-width: 1px;
 
     --fc-neutral-bg-color: #00000060;
