@@ -46,6 +46,9 @@ export const signIn = async (email, password) => {
     if (err == "FirebaseError: Firebase: Error (auth/invalid-email).") {
       alert("Please enter a valid email.");
     }
+    else if (err == "FirebaseError: Firebase: Error (auth/missing-password).") {
+      alert("Please enter a password.");
+    }
     else if (err == "FirebaseError: Firebase: Password should be at least 6 characters (auth/weak-password).") {
       alert("Your password must contain at least 6 characters.");
     }
@@ -67,6 +70,9 @@ export const forgotPassword = (email) => {
       const errorMessage = error.message;
       if (error.message == "Firebase: Error (auth/missing-email).") {
         alert("Please enter the email associated with your account.");
+      }
+      else if (error.message == "Firebase: Error (auth/invalid-email).") {
+        alert("Please enter a valid email.");
       }
     });
 };
