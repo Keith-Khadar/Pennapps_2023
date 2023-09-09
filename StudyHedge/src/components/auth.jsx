@@ -43,7 +43,15 @@ export const signIn = async (email, password) => {
     await createUserWithEmailAndPassword(auth, email, password);
   } catch (err) {
     console.error(err);
-    alert("Something went wrong. Try a different email or password.");
+    if (err == "FirebaseError: Firebase: Error (auth/invalid-email).") {
+      alert("Please enter a valid email.");
+    }
+    else if (err == "FirebaseError: Firebase: Password should be at least 6 characters (auth/weak-password).") {
+      alert("Your password must contain at least 6 characters.");
+    }
+    else if (err == "FirebaseError: Firebase: Error (auth/email-already-in-use).") {
+      alert("Incorrect password.");
+    }
   }
 };
 
@@ -57,6 +65,8 @@ export const forgotPassword = (email) => {
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      alert("Error! Check that you have entered a valid email.");
+      if (error.message == "Firebase: Error (auth/missing-email).") {
+        alert("Please enter the email associated with your account.");
+      }
     });
 };
