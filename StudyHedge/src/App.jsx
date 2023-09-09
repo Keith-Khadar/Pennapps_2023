@@ -28,17 +28,17 @@ function App() {
       {!user ? (
         <Login></Login>
       ) : (
-        <div class="h-screen flex flex-col">
+        <div className="h-screen flex flex-col">
           <div className="flex flex-1">
-            <main class="w-3/4 p-4">
-              <div class="h-full bg-white rounded-lg p-4 shadow">
+            <main className="w-3/4 p-4">
+              <div className="h-full bg-white rounded-lg p-4 shadow">
                 <Calendar></Calendar>
               </div>
             </main>
-            <aside class="w-1/4 h-screen">
-              <div class="flex flex-col space-y-10 justify-around p-6">
-                <div class="flex justify-around items-center content-around">
-                  <div class="text-4xl font-bold text-blue-500 shadow-lg p-4 rounded-lg">
+            <aside className="w-1/4 h-screen">
+              <div className="flex flex-col space-y-10 justify-around p-6">
+                <div className="flex justify-around items-center content-around">
+                  <div className="text-4xl font-bold text-blue-500 shadow-lg p-4 rounded-lg">
                     Study Hedge
                     <img
                       className="mx-auto h-10 w-auto"
@@ -53,7 +53,7 @@ function App() {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     className="w-8 h-8 mr-2" // Adjust the size and margin as needed
                     stroke="currentColor"
                   >
@@ -72,7 +72,7 @@ function App() {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     className="w-6 h-6 mr-2" // Adjust the size and margin as needed
                     stroke="currentColor"
                   >
@@ -91,7 +91,7 @@ function App() {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     className="w-6 h-6 mr-2" // Adjust the size and margin as needed
                     stroke="currentColor"
                   >
