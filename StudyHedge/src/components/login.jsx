@@ -1,4 +1,4 @@
-import { signInWithGoogle, logout, signIn } from "./auth";
+import { signInWithGoogle, signIn } from "./auth";
 import { useEffect, useState } from "react";
 
 export const Login = () => {

@@ -1,0 +1,16 @@
+:root {
+    --fc-border-color: rgba(0, 0, 0, 0.667);
+    --fc-daygrid-event-dot-width: 1px;
+
+    --fc-neutral-bg-color: #00000060;
+
+
+    --fc-button-text-color: #000000;
+    --fc-button-bg-color: #eaeaea54;
+    --fc-button-border-color: #ffffffb2;
+    --fc-button-hover-bg-color: #006ed646;
+    --fc-button-hover-border-color: #ffffff;
+    --fc-button-active-bg-color: #0080ff;
+    --fc-button-active-border-color: #0080ff;
+  }
+  
