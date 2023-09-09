@@ -15,7 +15,7 @@ export const Login = () => {
             alt="Study Hedge"
           />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Sign in to your account
+            Sign in or create an account
           </h2>
         </div>
 
@@ -80,7 +80,7 @@ export const Login = () => {
                   signIn(email, password);
                 }}
               >
-                Sign in
+                Sign up/Sign in
               </button>
             </div>
           </form>

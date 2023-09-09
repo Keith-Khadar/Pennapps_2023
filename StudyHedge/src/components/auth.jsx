@@ -43,7 +43,7 @@ export const signIn = async (email, password) => {
     await createUserWithEmailAndPassword(auth, email, password);
   } catch (err) {
     console.error(err);
-    alert("Something Went Wrong try a different email or password.");
+    alert("Something went wrong. Try a different email or password.");
   }
 };
 
@@ -52,11 +52,11 @@ export const forgotPassword = (email) => {
   sendPasswordResetEmail(auth, email)
     .then(() => {
       // Password reset email sent!
-      alert("Password Reset Email Sent!");
+      alert("Password reset email sent!");
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      alert("Error! Check that you have entered an Email.");
+      alert("Error! Check that you have entered a valid email.");
     });
 };
