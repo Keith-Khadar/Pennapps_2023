@@ -59,3 +59,4 @@ uritemplate==4.1.1
 urllib3==1.26.16
 Werkzeug==2.3.4
 wrapt==1.15.0
+twilio==8.8.0

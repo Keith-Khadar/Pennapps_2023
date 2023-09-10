@@ -4,7 +4,8 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime, timedelta, time
 import os
-
+import twilio
+from twilio.rest import Client
 
 
 #--------Firebase Creds--------#
@@ -13,6 +14,13 @@ app = Flask(__name__)
 cred = credentials.Certificate('admindoc.json')
 firebase_admin.initialize_app(cred)
 db_firestore = firestore.client()
+
+# --------Twilio Creds--------#
+TWILIO_ACCOUNT_SID = 'ACaade36dd4e0e5b5faf1f9768c1f6437c'
+TWILIO_AUTH_TOKEN = '22c1c2c188efb37a31883a4f43cf6f24'
+TWILIO_PHONE_NUMBER = '+18339661615'
+RECIPIENT_PHONE_NUMBER = '+13057120314'
+
 
 #--------Canvas Creds--------#
 CANVAS_API_URL = 'https://ufl.instructure.com/api/v1/'
@@ -34,6 +42,16 @@ def get_current_assignments_from_firestore(user_id):
     if doc.exists:
         return doc.to_dict()
     return {}
+
+#twilio Function:
+def send_sms(message):
+    """Helper function to send SMS via Twilio."""
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    client.messages.create(
+        to=RECIPIENT_PHONE_NUMBER,
+        from_=TWILIO_PHONE_NUMBER,
+        body=message
+    )
 
 #--------Score Math and Logic--------#
 def compute_score(due_date_str, weight, is_exam):
@@ -177,8 +195,18 @@ def fetch_canvas_data():
         group_weights = {group['id']: group.get('group_weight', 0) for group in assignment_groups_data}
         exam_count = sum(1 for assignment in assignments_data if 'exam' in assignment['name'].lower())
         assignments_info = []
+        #twilio Def
+        twelve_hours_from_now = datetime.utcnow() + timedelta(hours=12)
 
         for assignment in assignments_data:
+            #twilio Logic
+            due_datetime = None
+            if 'due_date' in assignment:
+                due_datetime = datetime.strptime(assignment['due_date'], "%Y-%m-%dT%H:%M:%SZ")
+            if due_datetime and twelve_hours_from_now >= due_datetime and assignment.get('notified', False) == False:
+                send_sms(f"{assignment['name']} is due in 12 hours!")
+                assignment['notified'] = True
+            #Canvas Logic
             if not assignment['due_at']:
                 continue
             is_exam = 'exam' in assignment['name'].lower() or 'final' in assignment['name'].lower()
@@ -220,16 +248,27 @@ def fetch_canvas_data():
     batch = db_firestore.batch()
 
     for day_name, assignments in structured_schedule.items():
-        day_doc_ref = db_firestore.collection(user_id).document('week').collection(day_name).document('assignments')
+        day_doc_ref = db_firestore.collection(user_id).document('week').collection(day_name).document('Assignments')
         batch.set(day_doc_ref, {"assignments": assignments})
 
     batch.commit()
-
     return jsonify({"message": "Data fetched successfully!"}), 200
 
 @app.route('/')
 def home():
     return "Hello, this is the root endpoint!"
+
+@app.route('/check')
+def check_and_send_notifications():
+    """Endpoint for manual checks."""
+    fetch_canvas_data()
+    send_sms("Check Complete!")
+    return "Sent Notifcation & Assignment Fetch done!"
+
+@app.route('/sendsms')
+def send_notifcation():
+    send_sms("Testing SMS")
+    return "Sent Notifcation!"
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
