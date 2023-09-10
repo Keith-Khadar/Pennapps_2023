@@ -16,6 +16,8 @@ import {
 } from "firebase/firestore";
 
 export const Calendar = () => {
+  const events = [{ title: "today's event", date: new Date() }];
+
   const [data, setData] = useState([]);
   const [newEvent, setNewEvent] = useState({
     title: "",
@@ -30,14 +32,15 @@ export const Calendar = () => {
     const eventsRef = collection(db, `calendars/${userUID}/events`);
 
     try {
-      const snapshot = await getDocs(eventsRef);
-      const fetchedData = snapshot.docs.map((doc) => ({
+      const data = await getDocs(eventsRef);
+      const filteredData = data.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
-      console.log(fetchedData);
-      setData(fetchedData);
       console.log(data);
+      console.log(new Date(filteredData.start));
+      console.log(events);
+      setData(filteredData);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }

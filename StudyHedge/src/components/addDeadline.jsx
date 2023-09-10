@@ -24,7 +24,8 @@ export default function AddDeadline() {
 
   // Event handler for the IonDatetime component
   const handleDatetimeChange = (e) => {
-    setSelectedTime(e.target.value);
+    console.log(e);
+    setSelectedTime(e.value);
   };
   return (
     <>
@@ -72,7 +73,8 @@ export default function AddDeadline() {
                 <IonDatetime
                   presentation="date-time"
                   preferWheel={true}
-                  onIonChange={handleDatetimeChange}
+                  onIonChange={(e) => handleDatetimeChange(e)}
+                  onLoad={(e) => handleDatetimeChange(e)}
                 ></IonDatetime>
                 <div className="w-full max-w-sm mx-auto">
                   <label
