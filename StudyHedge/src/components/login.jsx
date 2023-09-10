@@ -1,4 +1,4 @@
-import { signInWithGoogle, signIn } from "./auth";
+import { signInWithGoogle, signIn, forgotPassword } from "./auth";
 import { useEffect, useState } from "react";
 
 export const Login = () => {
@@ -11,11 +11,11 @@ export const Login = () => {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+            src="src/assets/Hedge.png"
             alt="Study Hedge"
           />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Sign in to your account
+            Sign in or create an account
           </h2>
         </div>
 
@@ -50,12 +50,12 @@ export const Login = () => {
                   Password
                 </label>
                 <div className="text-sm">
-                  <a
-                    href="#"
+                  <button
+                    onClick={() => forgotPassword(email)}
                     className="font-semibold text-indigo-600 hover:text-indigo-500"
                   >
-                    Forgot password? - NEED TO ADD
-                  </a>
+                    Forgot password?
+                  </button>
                 </div>
               </div>
               <div className="mt-2">
@@ -80,7 +80,7 @@ export const Login = () => {
                   signIn(email, password);
                 }}
               >
-                Sign in
+                Sign up/Sign in
               </button>
             </div>
           </form>

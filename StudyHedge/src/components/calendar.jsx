@@ -4,9 +4,6 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { useState } from "react";
-import interactionPlugin from "@fullcalendar/interaction";
-import { INITIAL_EVENTS, createEventId } from "./event-utils";
 
 export const Calendar = () => {
   return (

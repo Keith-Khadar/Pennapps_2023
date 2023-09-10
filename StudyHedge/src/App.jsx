@@ -4,6 +4,7 @@ import { Login } from "./components/login";
 import { Settings } from "./components/settings";
 import { auth } from "./config/firebase";
 import { Calendar } from "./components/calendar";
+import AddDeadline from "./components/addDeadline";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -28,38 +29,26 @@ function App() {
       {!user ? (
         <Login></Login>
       ) : (
-        <div class="h-screen flex flex-col">
+        <div className="h-screen flex flex-col">
           <div className="flex flex-1">
-            <main class="w-3/4 p-4">
-              <div class="h-full bg-white rounded-lg p-4 shadow">
+            <main className="w-3/4 p-4">
+              <div className="h-full bg-white rounded-lg p-4 shadow">
                 <Calendar></Calendar>
               </div>
             </main>
-            <aside class="w-1/4 h-screen">
-              <div class="flex flex-col space-y-10 justify-around p-6">
-                <div class="flex justify-around items-center content-around">
-                  <div class="text-4xl font-bold text-blue-500 shadow-lg p-4 rounded-lg">
+            <aside className="w-1/4 h-screen">
+              <div className="flex flex-col space-y-10 justify-around p-6">
+                <div className="flex justify-around items-center content-around">
+                  <div className="text-4xl font-bold text-blue-500 shadow-lg p-4 rounded-lg">
                     Study Hedge
+                    <img
+                      className="mx-auto h-10 w-auto"
+                      src="src/assets/Hedge.png"
+                      alt="Study Hedge"
+                    />
                   </div>
                 </div>
-                <button className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg flex items-center">
-                  {/* SVG icon */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    className="w-8 h-8 mr-2" // Adjust the size and margin as needed
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  Add Deadline
-                </button>
+                <AddDeadline></AddDeadline>
 
                 <button className="bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg flex items-center">
                   {/* SVG icon */}
@@ -67,7 +56,7 @@ function App() {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     className="w-6 h-6 mr-2" // Adjust the size and margin as needed
                     stroke="currentColor"
                   >
@@ -86,7 +75,7 @@ function App() {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     className="w-6 h-6 mr-2" // Adjust the size and margin as needed
                     stroke="currentColor"
                   >
