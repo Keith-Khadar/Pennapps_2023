@@ -46,9 +46,7 @@ export default function AddDeadline() {
     console.log(
       e.target.value.split("T")[0] + "-" + e.target.value.split("T")[1]
     );
-    setSelectedTime(
-      e.target.value.split("T")[0] + "-" + e.target.value.split("T")[1]
-    );
+    setSelectedTime(e.target.value);
   };
   return (
     <>

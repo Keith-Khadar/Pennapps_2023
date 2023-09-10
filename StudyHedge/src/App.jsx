@@ -1,10 +1,12 @@
 import "./App.css";
 import "@ionic/react/css/core.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
 import { Login } from "./components/login";
 import { Settings } from "./components/settings";
 import { auth } from "./config/firebase";
 import { Calendar } from "./components/calendar";
+import BCalendar from "./components/bigCalendar";
 import AddDeadline from "./components/addDeadline";
 import { setupIonicReact } from "@ionic/react";
 
@@ -34,46 +36,47 @@ function App() {
     <div className="App">
       {!user ? (
         <Login></Login>
-      ) : (
-        !submit ? (
-          <div className="container mx-auto sm px-4">
-            <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+      ) : !submit ? (
+        <div className="container mx-auto sm px-4">
+          <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <form>
-            <div>
-              <label
-                htmlFor="canvas"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                API Key
-              </label>
-              <div className="mt-2 mb-2">
-                <input
-                  id="api"
-                  name="api"
-                  type="api"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  onChange={(e) => setCanvas(e.target.value)}
-                />
-              </div>
-              <button
-                type="submit"
-                className="flex w-full gap-2 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                onClick={(e) => { setSubmit(true) }}
-              >
-                Submit
-              </button>
+              <form>
+                <div>
+                  <label
+                    htmlFor="canvas"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    API Key
+                  </label>
+                  <div className="mt-2 mb-2">
+                    <input
+                      id="api"
+                      name="api"
+                      type="api"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      onChange={(e) => setCanvas(e.target.value)}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="flex w-full gap-2 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    onClick={(e) => {
+                      setSubmit(true);
+                    }}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
             </div>
-            </form>
+          </div>
         </div>
-        </div>
-        </div>
-        ) : (
-          <div className="h-screen flex flex-col">
+      ) : (
+        <div className="h-screen flex flex-col">
           <div className="flex flex-1">
             <main className="w-3/4 p-4">
               <div className="h-full bg-white rounded-lg p-4 shadow">
-                <Calendar></Calendar>
+                <BCalendar></BCalendar>
               </div>
             </main>
             <aside className="w-1/4 h-screen">
@@ -134,7 +137,6 @@ function App() {
             </aside>
           </div>
         </div>
-        )
       )}
     </div>
   );
