@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 
 export const Calendar = () => {
-  const events = [{ title: "today's event", date: new Date() }];
+  const events = [{ title: "today's event", date: "2023:09:09:23:39" }];
 
   const [data, setData] = useState([]);
   const [newEvent, setNewEvent] = useState({
@@ -28,7 +28,6 @@ export const Calendar = () => {
 
   const fetchData = async () => {
     const userUID = auth.currentUser.uid;
-    console.log(`calendars/${userUID}/events`);
     const eventsRef = collection(db, `calendars/${userUID}/events`);
 
     try {
@@ -38,9 +37,11 @@ export const Calendar = () => {
         id: doc.id,
       }));
       console.log(data);
-      console.log(new Date(filteredData.start));
-      console.log(events);
-      setData(filteredData);
+      console.log(filteredData);
+      filteredData.forEach((el) => {
+        setData(el);
+      });
+      // setData(filteredData);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -91,7 +92,7 @@ export const Calendar = () => {
           },
         },
       }}
-      events={data}
+      events={events}
     />
   );
 };

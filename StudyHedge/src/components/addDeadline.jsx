@@ -3,19 +3,38 @@ import { IonDatetime } from "@ionic/react";
 
 // Initialization for ES Users
 import { Input, Datepicker, Timepicker, initTE } from "tw-elements";
+import { db, auth, storage } from ".././config/firebase";
+import {
+  getDocs,
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 
 export default function AddDeadline() {
   useEffect(() => {
     initTE({ Input, Timepicker, Datepicker });
   }, []);
 
-  const [assignmentTitle, setAssignmentTitle] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
+  const [assignmentTitle, setAssignmentTitle] = useState("Event");
+  const [selectedTime, setSelectedTime] = useState(new Date());
   const [showModal, setShowModal] = React.useState(false);
 
-  const handleAddEvent = () => {
-    console.log("Title: " + assignmentTitle);
-    console.log("Time:" + selectedTime);
+  const handleAddEvent = async () => {
+    const userUID = auth.currentUser.uid;
+    console.log(`calendars/${userUID}/events`);
+    const eventsRef = collection(db, `calendars/${userUID}/events`);
+
+    try {
+      await addDoc(eventsRef, {
+        title: assignmentTitle,
+        date: selectedTime,
+      });
+    } catch (err) {
+      console.err(err);
+    }
   };
   // Event handler for the input field
   const handleAssignmentTitleChange = (e) => {
@@ -24,8 +43,12 @@ export default function AddDeadline() {
 
   // Event handler for the IonDatetime component
   const handleDatetimeChange = (e) => {
-    console.log(e);
-    setSelectedTime(e.value);
+    console.log(
+      e.target.value.split("T")[0] + "-" + e.target.value.split("T")[1]
+    );
+    setSelectedTime(
+      e.target.value.split("T")[0] + "-" + e.target.value.split("T")[1]
+    );
   };
   return (
     <>
