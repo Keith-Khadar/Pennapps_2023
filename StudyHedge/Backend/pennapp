@@ -3,6 +3,8 @@ import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime, timedelta, time
+import os
+
 
 
 #--------Firebase Creds--------#
@@ -35,16 +37,20 @@ def get_current_assignments_from_firestore(user_id):
 
 #--------Score Math and Logic--------#
 def compute_score(due_date_str, weight, is_exam):
-    #To avoid types, we will simply assign no assigned due dates as -infinity
+    # If there's no due date, return a score of negative infinity
     if due_date_str is None:
         return float('-inf')
     due_date = datetime.strptime(due_date_str, "%Y-%m-%dT%H:%M:%SZ")
-    #Days Left = Due date - Current day -
+    
+    # Calculate days left until the assignment is due
     days_until_due = (due_date - datetime.utcnow()).days
-    if days_until_due == 0:
-        return 0
-    #Although simple this is the algothrim we landed on(Inspired by doppler equation)
-    score = weight / days_until_due
+
+    # If the due date is past or is today, return a score of negative infinity
+    if days_until_due <= 0:
+        return float('-inf')
+
+    # Calculate score based on the new formula
+    score = weight / (days_until_due ** 2)
     return score
 
 #--------Generatating Study Task for Exams--------#
@@ -79,43 +85,29 @@ def generate_study_tasks(assignment_name, due_date_str):
 #--------Schedule Assignments--------#
 def schedule_assignments(all_assignments):
 
-    #Getting Current info and prepping empty weekly schedule array
     day = datetime.utcnow().date()
-    end_date = day + timedelta(days=7)
+    end_date = day + timedelta(days=14)
     weekly_schedule = {}
 
-    #Separate the exams from regular assignments
-    #To be in exams array we run a for loop through all assignments
-    #If the assignment has an isexam key exist and if it has a value of true
-    #Once we will have an exam array
     exams = [a for a in all_assignments if 'is_exam' in a and a['is_exam']]
-    #For all the assignments not in exams array, they will go into a new array which represent no exams
     non_exam_assignments = [a for a in all_assignments if a not in exams]
 
-    #While we cycle through the week
     while day <= end_date:
-        #If weekend max_assignments and max_assignments 3 if weekday
         if day.weekday() in [5, 6]:
             max_assignments = 2
         else:
             max_assignments = 3
-        
-        #An algothrim we decided on that makes it so that extra credit assignment or
-        #assignments that have no weight should be started the day before(Suspectable to Teacher Error)
+
         zero_weight_due_tomorrow = [
-            #Iterating through non-exam assignments that have no weight, if it meets the criteria
-            #.., make it due the day before
             a for a in non_exam_assignments 
             if a.get('worth_percentage') == 0 and a.get('due_date') and datetime.strptime(a['due_date'], "%Y-%m-%dT%H:%M:%SZ").date() == day + timedelta(days=1)
         ]
-        
-        #If assignments aren't the zero weight ones, add them to the back of the sorted list of assigments and the list of assignments will now be those with more than 0 weight
+
         day_assignments = zero_weight_due_tomorrow + sorted([a for a in non_exam_assignments if a not in zero_weight_due_tomorrow], key=lambda x: x.get('score', 0), reverse=True)[:max_assignments-len(zero_weight_due_tomorrow)]
         non_exam_assignments = [a for a in non_exam_assignments if a not in day_assignments]
-        
+
         current_hour = WORK_START
 
-        #Cycle through all assigments and if assignment is an exam, give it a 3hr block , else give it a 1.5hr block(Can be modified)
         for assignment in day_assignments:
             if 'is_exam' in assignment and assignment['is_exam']:
                 assignment_end_time = current_hour + EXAM_STUDY_DURATION
@@ -124,43 +116,56 @@ def schedule_assignments(all_assignments):
             assignment['start_time'] = f"{current_hour}:00"
             assignment['end_time'] = f"{assignment_end_time}:00"
             current_hour = assignment_end_time
-        
-        # If day_assignments exist, add it to weekly scheudle and add a time delta of 1
-        if day_assignments:  
+
+        if day_assignments:
             weekly_schedule[day.strftime('%Y-%m-%d')] = day_assignments
         day += timedelta(days=1)
 
-    # Schedule exams on their due dates, but only if they are within this week.
     for exam in exams:
         due_day = datetime.strptime(exam['due_date'], "%Y-%m-%dT%H:%M:%SZ").date()
         if due_day <= end_date:
             if due_day.strftime('%Y-%m-%d') not in weekly_schedule:
                 weekly_schedule[due_day.strftime('%Y-%m-%d')] = []
             weekly_schedule[due_day.strftime('%Y-%m-%d')].append(exam)
-    return weekly_schedule
+
+    structured_schedule = {
+        'Monday': [],
+        'Tuesday': [],
+        'Wednesday': [],
+        'Thursday': [],
+        'Friday': [],
+        'Saturday': [],
+        'Sunday': []
+    }
+
+    structured_schedule = {}
+    for date_str, assignments in weekly_schedule.items():
+        parsed_date = datetime.strptime(date_str, '%Y-%m-%d')
+        if parsed_date.date() <= day + timedelta(days=7):
+            day_month_str = parsed_date.strftime('%m-%d')
+            structured_schedule[day_month_str] = assignments
+    return structured_schedule
+
 
 #--------Create this API route to which called, get's all of user's data and uploads in firebase--------#
 @app.route('/fetch_canvas_data', methods=['GET'])
 def fetch_canvas_data():
-    #Getting Users Data
+
     headers = {"Authorization": f"Bearer {CANVAS_API_TOKEN}"}
     response = requests.get(CANVAS_API_URL + "users/self", headers=headers)
     user_data = response.json()
     user_id = str(user_data.get('id', None))
-    #Get Corresponding Canvas API Irl
-    url = CANVAS_API_URL + f"users/{user_id}/courses?enrollment_state=active"
 
-    #Use Course API and make a list of courses
+    url = CANVAS_API_URL + f"users/{user_id}/courses?enrollment_state=active"
     courses_response = requests.get(url, headers=headers)
     courses_data = courses_response.json()
 
-    #Use Favorites API and make a list of courses that are favorited
     favorites_url = CANVAS_API_URL + "users/self/favorites/courses"
     favorites_response = requests.get(favorites_url, headers=headers)
     favorite_courses = favorites_response.json()
+
     all_assignments = []
 
-    #For Courses in favorite courses extract all information
     for course in favorite_courses:
         course_name = course['name']
         course_id = str(course['id'])
@@ -169,15 +174,10 @@ def fetch_canvas_data():
         assignments_response = requests.get(CANVAS_API_URL + f'courses/{course_id}/assignments', headers=headers)
         assignments_data = assignments_response.json()
 
-        #Each Assignment will be based off the cateogery it's in controbution to total grade
         group_weights = {group['id']: group.get('group_weight', 0) for group in assignment_groups_data}
-        
-        #Exams and outweight all other assignments so we must count the amount of exam's and dvided it to give it a reasonable weight
         exam_count = sum(1 for assignment in assignments_data if 'exam' in assignment['name'].lower())
         assignments_info = []
-        #For assigments in assignment data if it's an exam , 
-        # if it has no due date skip , if it's an exam divide the weight and give it the apporaite weight
-        #if the score is 0 skip and then add all wanted data from json 
+
         for assignment in assignments_data:
             if not assignment['due_at']:
                 continue
@@ -186,8 +186,11 @@ def fetch_canvas_data():
             if is_exam:
                 assignment_weight /= exam_count
             assignment_score = compute_score(assignment['due_at'], assignment_weight, is_exam)
+            
+            # Only consider assignments with positive scores (i.e., assignments that are not overdue)
             if assignment_score <= 0:
                 continue
+
             info = {
                 'name': assignment['name'],
                 'due_date': assignment['due_at'],
@@ -198,35 +201,36 @@ def fetch_canvas_data():
                 'assignment_link': assignment['html_url'],
                 'completed': False
             }
-            #Appened json formate into assignment info list
             assignments_info.append(info)
-            #If exams called task to generate study task for exams and put ito assignments
             if is_exam:
                 study_tasks = generate_study_tasks(assignment['name'], assignment['due_at'])
                 assignments_info.extend(study_tasks)
-        #All assigments info to end of list
         all_assignments.extend(assignments_info)
 
-        #Check Completed Status
-        
-        #Call function and check to pull latest database(waiting for front-end change)
-        current_assignments = get_current_assignments_from_firestore(user_id)  
-        #For assignment in all assiments check if completed is false or true and change accordingly(Get call from button or modify firebase directly from react)
-        for assignment in all_assignments:
-            for date, assignments_on_date in current_assignments.items():
-                for old_assignment in assignments_on_date:
-                    if old_assignment['name'] == assignment['name']:
-                        assignment['completed'] = old_assignment.get('completed', False)
+    current_assignments = get_current_assignments_from_firestore(user_id)
 
-        user_assignments_ref = db_firestore.collection(user_id).document("weekly_schedule")
-        user_assignments_ref.set({"assignments": all_assignments})
-        return jsonify({"message": "Data fetched successfully!"}), 200
+    for assignment in all_assignments:
+        for date, assignments_on_date in current_assignments.items():
+            for old_assignment in assignments_on_date:
+                if old_assignment['name'] == assignment['name']:
+                    assignment['completed'] = old_assignment.get('completed', False)
 
-#Simple Root To check if server is running
+    structured_schedule = schedule_assignments(all_assignments)
+    db_firestore = firestore.client()
+    batch = db_firestore.batch()
+
+    for day_name, assignments in structured_schedule.items():
+        day_doc_ref = db_firestore.collection(user_id).document('week').collection(day_name).document('assignments')
+        batch.set(day_doc_ref, {"assignments": assignments})
+
+    batch.commit()
+
+    return jsonify({"message": "Data fetched successfully!"}), 200
+
 @app.route('/')
 def home():
     return "Hello, this is the root endpoint!"
 
-#Run on debug mode if file is ran
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port)
