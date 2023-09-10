@@ -44,7 +44,7 @@ return (
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <form>
         <div>
-          {/* <label
+          <label
             htmlFor="phone"
             className="block text-sm font-medium leading-6 text-gray-900"
           >
@@ -62,7 +62,7 @@ return (
               // onChange={(e) => setPhone(e.target.value)}
             />
           </div>
-          </label> */}
+          </label>
           <label
             htmlFor="canvas"
             className="block text-sm font-medium leading-6 text-gray-900"
