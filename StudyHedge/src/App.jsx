@@ -1,10 +1,14 @@
 import "./App.css";
+import "@ionic/react/css/core.css";
 import { useEffect, useState } from "react";
 import { Login } from "./components/login";
 import { Settings } from "./components/settings";
 import { auth } from "./config/firebase";
 import { Calendar } from "./components/calendar";
 import AddDeadline from "./components/addDeadline";
+import { setupIonicReact } from "@ionic/react";
+
+setupIonicReact();
 
 function App() {
   const [user, setUser] = useState(null);

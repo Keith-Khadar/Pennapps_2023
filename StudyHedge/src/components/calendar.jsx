@@ -4,8 +4,48 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import { useState, useEffect } from "react";
+import { db, auth, storage } from ".././config/firebase";
+import {
+  getDocs,
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 
 export const Calendar = () => {
+  const [data, setData] = useState([]);
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    description: "",
+    start: null,
+    end: null,
+  });
+
+  const fetchData = async () => {
+    const userUID = auth.currentUser.uid;
+    console.log(`calendars/${userUID}/events`);
+    const eventsRef = collection(db, `calendars/${userUID}/events`);
+
+    try {
+      const snapshot = await getDocs(eventsRef);
+      const fetchedData = snapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      console.log(fetchedData);
+      setData(fetchedData);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <FullCalendar
       plugins={[timeGridPlugin]}
@@ -48,6 +88,7 @@ export const Calendar = () => {
           },
         },
       }}
+      events={data}
     />
   );
 };

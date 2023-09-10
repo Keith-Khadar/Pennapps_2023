@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { IonDatetime } from "@ionic/react";
 
 // Initialization for ES Users
 import { Input, Datepicker, Timepicker, initTE } from "tw-elements";
@@ -7,7 +8,24 @@ export default function AddDeadline() {
   useEffect(() => {
     initTE({ Input, Timepicker, Datepicker });
   }, []);
+
+  const [assignmentTitle, setAssignmentTitle] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
   const [showModal, setShowModal] = React.useState(false);
+
+  const handleAddEvent = () => {
+    console.log("Title: " + assignmentTitle);
+    console.log("Time:" + selectedTime);
+  };
+  // Event handler for the input field
+  const handleAssignmentTitleChange = (e) => {
+    setAssignmentTitle(e.target.value);
+  };
+
+  // Event handler for the IonDatetime component
+  const handleDatetimeChange = (e) => {
+    setSelectedTime(e.target.value);
+  };
   return (
     <>
       <button
@@ -51,49 +69,26 @@ export default function AddDeadline() {
                 </div>
                 {/*body*/}
 
-                <div className="flex justify-center mt-10">
-                  <div
-                    className="relative"
-                    id="timepicker-with-button"
-                    data-te-timepicker-init
-                    data-te-input-wrapper-init
+                <IonDatetime
+                  presentation="date-time"
+                  preferWheel={true}
+                  onIonChange={handleDatetimeChange}
+                ></IonDatetime>
+                <div className="w-full max-w-sm mx-auto">
+                  <label
+                    htmlFor="assignmentTitle"
+                    className="block text-gray-700 text-sm font-bold mb-2"
                   >
-                    <input
-                      type="text"
-                      className="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                      id="form4"
-                    />
-                    <label
-                      htmlFor="form4"
-                      className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-                    >
-                      Select a time
-                    </label>
-                    <button
-                      tabindex="0"
-                      type="button"
-                      className="timepicker-toggle-button absolute right-1.5 top-1/2 ml-auto h-4 w-4 -translate-x-1/2 -translate-y-1/2 cursor-pointer border-none bg-transparent text-neutral-700 outline-none transition-all duration-[300ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:fill-[#3b71ca] focus:text-[#3b71ca] dark:text-white dark:hover:text-[#3b71ca] dark:focus:text-[#3b71ca]"
-                      data-te-toggle="timepicker-with-button"
-                      data-te-timepicker-toggle-button
-                    >
-                      <span data-te-timepicker-icon>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className="h-5 w-5"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5"
-                          />
-                        </svg>
-                      </span>
-                    </button>
-                  </div>
+                    Assignment Title:
+                  </label>
+                  <input
+                    type="text"
+                    id="assignmentTitle"
+                    name="input"
+                    placeholder="Enter text..."
+                    onChange={handleAssignmentTitleChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
                 </div>
                 {/*footer*/}
                 <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
@@ -107,7 +102,7 @@ export default function AddDeadline() {
                   <button
                     className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={() => handleAddEvent()}
                   >
                     Add
                   </button>
