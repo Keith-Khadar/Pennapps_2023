@@ -76,3 +76,8 @@ export const forgotPassword = (email) => {
       }
     });
 };
+
+
+export const addAPI = () => {
+  <Home></Home>
+};

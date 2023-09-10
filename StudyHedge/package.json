@@ -17,6 +17,8 @@
     "@fullcalendar/list": "^6.1.8",
     "@fullcalendar/react": "^6.1.8",
     "@fullcalendar/timegrid": "^6.1.8",
+    "@ionic/react": "^7.3.3",
+    "@ionic/react-router": "^7.3.3",
     "bootstrap": "^5.3.1",
     "bootstrap-icons": "^1.10.5",
     "firebase": "^10.3.1",
