@@ -1,0 +1,7 @@
+{
+  "name": "Study Hedge",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
