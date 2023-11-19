@@ -1,6 +1,6 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
+    <ion-menu side="end" contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
           <ion-list-header>Inbox</ion-list-header>
@@ -25,5 +25,13 @@
       </ion-content>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Controller Modal</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-button expand="block" (click)="openModal()">Open</ion-button>
+    </ion-content>
   </ion-split-pane>
 </ion-app>
